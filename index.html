@@ -79,8 +79,9 @@
 
     <div class="container">
         <h1>ステータス入力</h1>
-        <h2 id="dayCounter">Day 1</h2>
+        <h2 id="dayCounter">Day 1</h2> <!-- ←コレが日付表示！ -->
 
+        <!-- ステータス入力欄 -->
         <div class="input-group">
             <label for="onaka">おなか</label>
             <input type="number" id="onaka" min="0" max="100" value="100">
@@ -128,24 +129,20 @@
             const vitc = document.getElementById('vitc');
             const vitb = document.getElementById('vitb');
 
-            // 毎経過処理（共通）
             onaka.value = Math.max(0, onaka.value - 10);
             suibun.value = Math.max(0, suibun.value - 10);
 
-            // 晩2の時だけビタミン減少
             if (times[currentTimeIndex] === "経過(晩2)") {
                 vitc.value = Math.max(0, vitc.value - 10);
                 vitb.value = Math.max(0, vitb.value - 10);
             }
 
-            // 朝になったら日数+1
             currentTimeIndex = (currentTimeIndex + 1) % times.length;
             if (currentTimeIndex === 0) {
                 currentDay++;
                 document.getElementById('dayCounter').innerText = `Day ${currentDay}`;
             }
 
-            // ボタン表記更新
             document.querySelector('.advance-btn').innerText = times[currentTimeIndex];
         }
 
@@ -157,7 +154,6 @@
             document.getElementById('taikyuu').value = 10;
             document.getElementById('vitc').value = 100;
             document.getElementById('vitb').value = 100;
-
             currentTimeIndex = 0;
             currentDay = 1;
             document.getElementById('dayCounter').innerText = `Day ${currentDay}`;
