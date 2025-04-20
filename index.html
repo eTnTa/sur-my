@@ -86,11 +86,15 @@
         <div class="input-group">
             <label for="suibun">水分</label>
             <input type="number" id="suibun" min="0" max="100" value="100">
-        </div>
         <div class="input-group">
-            <label for="stamina">スタミナ</label>
-            <input type="number" id="stamina" min="0" max="10" value="10">
-        </div>
+    <label for="stamina">スタミナ</label>
+    <div style="display: flex; gap: 5px; align-items: center;">
+        <button type="button" onclick="adjustStamina(-1)">−</button>
+        <input type="number" id="stamina" min="0" max="10" value="10" style="flex:1; text-align: right;">
+        <button type="button" onclick="adjustStamina(1)">＋</button>
+    </div>
+</div>
+            
         <div class="input-group">
             <label for="seishin">精神</label>
             <input type="number" id="seishin" min="0" max="20" value="20">
@@ -145,6 +149,16 @@
             currentTimeIndex = 0;
             document.querySelector('.advance-btn').innerText = times[currentTimeIndex];
         }
+        function adjustStamina(amount) {
+    const staminaInput = document.getElementById('stamina');
+    let current = parseInt(staminaInput.value, 10);
+    let newValue = current + amount;
+
+    // スタミナの範囲制限 (0〜10)
+    newValue = Math.max(0, Math.min(10, newValue));
+    staminaInput.value = newValue;
+}
+
     </script>
 </body>
 </html>
