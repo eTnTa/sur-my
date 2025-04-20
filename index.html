@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ステータス入力ページ</title>
+    <title>ステータス入力ページ（日数表示版）</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -19,7 +19,7 @@
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        h1 {
+        h1, h2 {
             text-align: center;
             margin-bottom: 20px;
         }
@@ -54,7 +54,6 @@
         .advance-btn:hover, .reset-btn:hover {
             background-color: #45a049;
         }
-
         .reset-container {
             position: fixed;
             top: 10px;
@@ -73,12 +72,15 @@
     </style>
 </head>
 <body>
+
     <div class="reset-container">
         <button class="reset-btn" onclick="resetStatus()">自動リセット</button>
     </div>
 
     <div class="container">
         <h1>ステータス入力</h1>
+        <h2 id="dayCounter">Day 1</h2>
+
         <div class="input-group">
             <label for="onaka">おなか</label>
             <input type="number" id="onaka" min="0" max="100" value="100">
@@ -88,14 +90,13 @@
             <input type="number" id="suibun" min="0" max="100" value="100">
         </div>
         <div class="input-group">
-    <label for="stamina">スタミナ</label>
-    <div style="display: flex; gap: 5px; align-items: center;">
-        <button type="button" onclick="adjustStamina(-1)">−</button>
-        <input type="number" id="stamina" min="0" max="10" value="10" style="flex:1; text-align: right;">
-        <button type="button" onclick="adjustStamina(1)">＋</button>
-    </div>
-</div>
-            
+            <label for="stamina">スタミナ</label>
+            <div style="display: flex; gap: 5px; align-items: center;">
+                <button type="button" onclick="adjustStamina(-1)">−</button>
+                <input type="number" id="stamina" min="0" max="10" value="10" style="flex:1; text-align: right;">
+                <button type="button" onclick="adjustStamina(1)">＋</button>
+            </div>
+        </div>
         <div class="input-group">
             <label for="seishin">精神</label>
             <input type="number" id="seishin" min="0" max="20" value="20">
@@ -119,6 +120,7 @@
     <script>
         const times = ["経過(朝)", "経過(昼1)", "経過(昼2)", "経過(晩1)", "経過(晩2)"];
         let currentTimeIndex = 0;
+        let currentDay = 1;
 
         function advanceTime() {
             const onaka = document.getElementById('onaka');
@@ -126,15 +128,24 @@
             const vitc = document.getElementById('vitc');
             const vitb = document.getElementById('vitb');
 
+            // 毎経過処理（共通）
             onaka.value = Math.max(0, onaka.value - 10);
             suibun.value = Math.max(0, suibun.value - 10);
 
+            // 晩2の時だけビタミン減少
             if (times[currentTimeIndex] === "経過(晩2)") {
                 vitc.value = Math.max(0, vitc.value - 10);
                 vitb.value = Math.max(0, vitb.value - 10);
             }
 
+            // 朝になったら日数+1
             currentTimeIndex = (currentTimeIndex + 1) % times.length;
+            if (currentTimeIndex === 0) {
+                currentDay++;
+                document.getElementById('dayCounter').innerText = `Day ${currentDay}`;
+            }
+
+            // ボタン表記更新
             document.querySelector('.advance-btn').innerText = times[currentTimeIndex];
         }
 
@@ -148,18 +159,17 @@
             document.getElementById('vitb').value = 100;
 
             currentTimeIndex = 0;
+            currentDay = 1;
+            document.getElementById('dayCounter').innerText = `Day ${currentDay}`;
             document.querySelector('.advance-btn').innerText = times[currentTimeIndex];
         }
+
         function adjustStamina(amount) {
-    const staminaInput = document.getElementById('stamina');
-    let current = parseInt(staminaInput.value, 10);
-    let newValue = current + amount;
-
-    // スタミナの範囲制限 (0〜10)
-    newValue = Math.max(0, Math.min(10, newValue));
-    staminaInput.value = newValue;
-}
-
+            const staminaInput = document.getElementById('stamina');
+            let current = parseInt(staminaInput.value, 10);
+            let newValue = current + amount;
+            staminaInput.value = Math.max(0, Math.min(10, newValue));
+        }
     </script>
 </body>
 </html>
